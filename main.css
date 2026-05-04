@@ -1,0 +1,628 @@
+/* 1. Базовые настройки страницы */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Глубокий темно-синий градиент */
+    background: linear-gradient(135deg, #000c18 0%, #001f3f 100%);
+    background-attachment: fixed;
+    color: white;
+    min-height: 100vh;
+}
+
+/* 2. Навигация (Шапка) */
+header {
+    background: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(10px);    
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-list {
+    list-style: none;      
+    margin: 0;
+    padding: 0;
+    display: flex;         
+    justify-content: space-around; 
+    align-items: center;
+}
+
+.nav-list li a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.nav-list li a:hover, 
+.nav-list li a.active {
+    color: #fbbc05; /* Золотистый акцент */
+}
+
+.material-icons {
+    font-size: 30px;
+}
+
+/* 3. Контент и карточка профиля */
+.content {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.1); /* Эффект стекла */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 350px;
+    margin: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+
+/* 4. Фото профиля и загрузка */
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    border: 4px solid #fbbc05;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(251, 188, 5, 0.3);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.edit-overlay {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    width: 100%;
+    font-size: 11px;
+    padding: 8px 0;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.profile-avatar:hover .edit-overlay {
+    opacity: 1;
+}
+
+/* 5. Поля ввода и выбора (Inputs & Select) */
+.input-edit {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    width: 90%;
+    margin-bottom: 15px;
+    font-family: inherit;
+    outline: none;
+}
+
+.name-edit {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.role-select {
+    background: #6200ee; /* Тот самый фиолетовый */
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Удаляем стандартную стрелочку у select, чтобы было красивее */
+select.role-select {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* 6. Настройки и кнопки */
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 75, 75, 0.2);
+    border-color: #ff4b4b;
+}
+
+.info-email {
+    opacity: 0.7;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+/* 5. Стили для Музыки */
+.main-table-btn {
+    display: block;
+    background: linear-gradient(135deg, #6200ee, #3700b3);
+    color: white !important;
+    text-decoration: none;
+    text-align: center;
+    padding: 18px;
+    border-radius: 15px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 20px rgba(98, 0, 238, 0.3);
+}
+
+.sunday-group {
+    margin-bottom: 15px;
+}
+
+.sunday-header {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.sunday-header .material-icons {
+    transition: 0.3s;
+    margin-right: 10px;
+}
+
+.sunday-header.open .material-icons {
+    transform: rotate(180deg);
+}
+
+.section-title {
+    font-size: 14px;
+    color: #aaa;
+    margin: 15px 0 10px 5px;
+    letter-spacing: 1px;
+}
+
+/* 6. Карточки песен */
+.song-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.song-name {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.song-meta {
+    font-size: 13px;
+    color: #ccc;
+}
+
+.song-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.song-actions a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+/* Цвета иконок */
+.icon-tutorial { color: #ffeb3b; } /* Желтый */
+.icon-chords { color: #81d4fa; }   /* Голубой */
+.icon-yt { color: #ff5252; }       /* Красный */
+.icon-sp { color: #4caf50; }       /* Зеленый */
+
+.song-actions .material-icons {
+    font-size: 28px;
+    transition: 0.2s;
+}
+
+.song-actions .material-icons:hover {
+    transform: scale(1.2);
+}
+
+.song-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px; /* Увеличил отступы */
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease;
+}
+
+.song-card:active {
+    transform: scale(0.97); /* Эффект нажатия */
+}
+
+.song-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Расстояние между названием и автором */
+}
+
+.song-actions {
+    display: flex;
+    gap: 15px; /* Больше места между иконками */
+}
+
+/* Стиль для активной иконки в меню */
+.nav-list li a.active {
+    color: #ffcc00; /* Золотистый цвет, как у ободка аватара */
+    opacity: 1;
+    transform: scale(1.3);
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+/* Добавим плавный переход, чтобы подсветка включалась мягко */
+.nav-list a {
+    transition: all 0.3s ease;
+}
+
+
+/* Срочное уведомление (красное) */
+.notification-item.urgent {
+    border-left: 5px solid #ff5252;
+    background: rgba(255, 82, 82, 0.1);
+}
+.notification-item.urgent .notif-icon {
+    background: #ff5252;
+}
+
+/* Кнопка внутри уведомления */
+.notif-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #ffcc00;
+    color: black !important;
+    padding: 8px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+/* Напоминание (желтое/оранжевое) */
+.notification-item.reminder {
+    border-left: 5px solid #ffab40;
+}
+.notification-item.reminder .notif-icon {
+    background: #ffab40;
+}
+
+.calendar-months-nav {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px;
+}
+
+.month-tab {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: white; padding: 6px 15px; border-radius: 10px; cursor: pointer;
+}
+
+.month-tab.active { background: #007aff; border-color: #007aff; }
+
+.calendar-grid-container {
+    background: #1a1a1a; border-radius: 15px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    background: rgba(255,255,255,0.05); text-align: center;
+    padding: 10px 0; font-size: 12px; color: #888;
+}
+
+.days-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: 80px; /* Высота ячейки */
+}
+
+.day-cell {
+    border: 0.5px solid rgba(255,255,255,0.05); padding: 5px;
+    display: flex; flex-direction: column; gap: 4px; position: relative;
+}
+
+.day-num { font-size: 12px; color: #ccc; }
+.day-num.today { background: #007aff; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+
+.event-tag {
+    background: #00897b; color: white; font-size: 9px;
+    padding: 2px 4px; border-radius: 4px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+}
+
+.day-cell.disabled { background: rgba(0,0,0,0.3); opacity: 0.5; }
+
+/* Панель деталей снизу */
+.day-details-panel {
+    position: fixed; bottom: 0; left: 0; right: 0; 
+    background: #2c2c2e; padding: 20px; border-top-left-radius: 20px; 
+    border-top-right-radius: 20px; z-index: 2000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+}
+
+
+/* Исправление контейнера календаря для мобильных устройств */
+#calendar-section {
+    width: 100%;
+    max-width: 500px; /* Чтобы на ПК не растягивалось на весь экран */
+    margin: 0 auto;
+}
+
+/* Стили для ячеек сетки, чтобы они были видны */
+.day-cell {
+    border: 0.5px solid rgba(255, 255, 255, 0.1) !important; /* Делаем сетку видимой */
+    min-height: 80px;
+    transition: background 0.2s;
+}
+
+.day-cell:active {
+    background: rgba(255, 255, 255, 0.1); /* Эффект нажатия на дату */
+}
+
+/* Стили для уведомлений (которых не хватало) */
+.notifications-container {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.notification-item {
+    display: flex;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 15px;
+    align-items: flex-start;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notif-icon {
+    min-width: 40px;
+    height: 40px;
+    background: #6200ee;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-content b {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.notif-content p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Центрируем контент всех вкладок */
+.tab-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+
+.calendar {
+
+    position: relative;
+
+    height: 370px;
+
+    width: 450px;
+
+    border-radius: 25px;
+
+    background: rgba(255, 255, 255, 0.2);
+
+    backdrop-filter: blur(30px);
+
+    border: 2px solid rgba(255, 255, 255, 0.1);
+
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.2);
+
+    overflow: hidden;
+
+    font-family: sans-serif;
+
+}
+
+
+
+.calendar_header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 20px 25px;
+
+    color: white;
+
+}
+
+
+
+.calendar_month {
+
+    font-weight: bold;
+
+    font-size: 22px;
+
+}
+
+
+
+.calendar_btns {
+
+    display: flex;
+
+    column-gap: 15px;
+
+}
+
+
+
+.calendar_btn {
+
+    background: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    padding: 0;
+
+    transition: opacity 0.2s;
+
+}
+
+
+
+.calendar_btn img {
+
+    width: 20px;
+
+    height: 20px;
+
+    /* Если иконки черные, этот фильтр сделает их белыми */
+
+    filter: brightness(0) invert(1);
+
+}
+
+
+
+.calendar_btn:hover {
+
+    opacity: 0.6;
+
+}
+
+
+
+/* СЕТКА: Названия дней и сами числа */
+
+.calendar__day-names,
+
+#calendar-days {
+
+    display: grid;
+
+    grid-template-columns: repeat(7, 1fr); /* 7 колонок */
+
+    text-align: center;
+
+    color: white;
+
+}
+
+
+
+.calendar__day-names {
+
+    margin-bottom: 10px;
+
+    font-weight: bold;
+
+    font-size: 14px;
+
+    opacity: 0.8;
+
+}
+
+
+
+#calendar-days {
+
+    row-gap: 8px; /* Отступ между рядами недель */
+
+}
+
+
+
+/* Стили для каждой ячейки числа */
+
+/* Настройка ячейки дня в календаре */
+#calendar-days span {
+    display: flex;
+    flex-direction: column; /* Располагаем элементы вертикально (число сверху, точки снизу) */
+    align-items: center;    /* Центрируем и число, и точки по горизонтали */
+    justify-content: center;
+    position: relative;
+    height: 50px;           /* Настрой высоту под свой дизайн */
+    cursor: pointer;
+}
+
+/* Контейнер для точек */
+.event-dots {
+    display: flex;
+    justify-content: center;
+    gap: 3px;               /* Расстояние между точками */
+    margin-top: 2px;        /* Отступ точек от числа */
+    height: 6px;            /* Чтобы точки не растягивали ячейку */
+}
+
+/* Сами точки */
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Цвета для типов событий */
+.dot-rehearsal { background-color: #f1c40f; } /* Желтый */
+.dot-meeting { background-color: #e74c3c; }   /* Красный */
+.dot-prayer { background-color: #2ecc71; }    /* Зеленый */

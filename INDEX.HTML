@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEW HOPE WORSHIP</title>
+    <link rel="stylesheet" href="css/main.css"> 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <nav>
+            <ul class="nav-list">
+                <!-- ДОБАВЛЕНО: onclick для переключения -->
+                <li><a href="#" onclick="showTab('home')"><span class="material-icons">home</span></a></li>
+                <li><a href="#" onclick="showTab('calendar')"><span class="material-icons">calendar_month</span></a></li>
+                <li><a href="#" onclick="showTab('notifications')"><span class="material-icons">notifications</span></a></li>
+                <li><a href="#" onclick="showTab('songs')"><span class="material-icons">music_note</span></a></li>
+                <li><a href="#" onclick="showTab('profile')"><span class="material-icons">person</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        <!-- Секция Профиля -->
+        <div id="profile-section" class="tab-content" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-avatar" onclick="document.getElementById('fileInput').click()">
+                    <img id="avatarImage" src="OIP.webp" alt="Александр">
+                    <input type="file" id="fileInput" style="display:none" accept="image/*">
+                    <div class="edit-overlay">Сменить фото</div>
+                </div>
+                
+                <input type="text" id="userName" class="input-edit name-edit" value="АЛЕКСАНДР ИВАНОВ">
+                
+                <div class="profile-details">
+                    <!-- ИСПРАВЛЕНО: value теперь совпадает с ключами в tutorials -->
+                    <select id="userRole" class="input-edit role-select" onchange="renderSongs()">
+                        <option value="Акустика">Акустика</option>
+                        <option value="Бас-гитара">Бас-гитара</option>
+                        <option value="Клавишные">Клавишные</option>
+                        <option value="Барабаны">Барабаны</option>
+                        <option value="Вокал">Вокал</option>
+                    </select>
+                    <p class="email">alex@example.com</p>
+                </div>
+
+                <button class="logout-btn">
+                    <span class="material-icons">logout</span> Выход
+                </button>
+            </div>
+<button onclick="runNotificationTest()" style="margin: 10px; background: orange; color: black; border-radius: 5px; padding: 10px;">
+    ЗАПУСТИТЬ ТЕСТ УВЕДОМЛЕНИЙ
+</button>
+        </div>
+
+        <!-- Секция Музыки -->
+        <div id="songs-section" class="tab-content">
+            <a href="https://docs.google.com/spreadsheets/d/1-ltvt4x_z1z2truFEwXkGG5sTbzItxQSuWOFgsTWOrU/edit" target="_blank" class="main-table-btn">
+                ОСНОВНАЯ ТАБЛИЦА
+            </a>
+            <div id="songs-container"></div>
+        </div>
+
+<div id="notifications-section" class="tab-content" style="display: none;">
+    <div class="notifications-container" id="notifications-list">
+        </div>
+
+
+</div>
+<div id="calendar-section" class="tab-content" style="display: none;">
+<div class="calendar">
+    <div class="calendar_header">
+<div class="calendar_month" id="month-year"></div>
+<div class="calendar_btns">
+    <button type="button" class="calendar_btn" id="prev-btn">
+    <img src="img/arrow-left-5-svgrepo-com.svg" alt="иконка">    
+    </button>
+    <button type="button" class="calendar_btn" id="next-btn">
+    <img src="img/right-arrow-svgrepo-com.svg" alt="иконка">    
+    </button>
+</div>
+    </div>
+
+    <div class="calendar_body">
+        <div class="calendar__day-names">
+
+
+        </div>
+        <div class="calendar__days" id="calendar-days">
+        </div>
+
+    </div>
+</div>
+</div>
+<div id="event-modal" class="modal-overlay">
+    <div class="modal-content-card">
+        <div id="modal-body"></div>
+        <button class="modal-close-button" onclick="closeModal()">Закрыть</button>
+    </div>
+</div>
+</div>
+
+
+
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const avatarImage = document.getElementById('avatarImage');
+
+        // Загрузка фото
+        if (fileInput) {
+            fileInput.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        avatarImage.src = event.target.result;
+                        localStorage.setItem('userAvatar', event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        }
+
+        // ДАННЫЕ ПЕСЕН
+        const sundayData = [
+            {
+                date: "03.05",
+                songs: [
+                    { 
+                        name: "БОГ ЖИВОЙ", author: "СЛОВО ЖИЗНИ", key: "Е", who: "LEV", section: "ПЕРЕД СЛУЖЕНИЕМ",
+                        chords: "https://holychords.pro/46", yt: "https://www.youtube.com/results?search_query=%D0%91%D0%BE%D0%B3%20%D0%B6%D0%B8%D0%B2%D0%BE%D0%B9%20%D0%A1%D0%9B%D0%9E%D0%92%D0%9E%20%D0%96%D0%98%D0%97%D0%9D%D0%98%20MUSIC", sp: "https://open.spotify.com/search/%D0%91%D0%BE%D0%B3%20%D0%B6%D0%B8%D0%B2%D0%BE%D0%B9%20%D0%A1%D0%BB%D0%BE%D0%B2%D0%BE%20%D0%96%D0%B8%D0%B7%D0%BD%D0%B8",
+                        tutorials: { "Клавишные":"#", "Акустика": "#", "Барабаны": "#", "Бас-гитара":"#"}
+                    },
+                    { 
+                        name: "БОГ ЖИВОЙ", author: "СЛОВО ЖИЗНИ", key: "Е", who: "LEV", section: "СЛУЖЕНИЕ",
+                        chords: "https://holychords.pro/46", yt: "https://youtube.com", sp: "https://spotify.com",
+                        tutorials: { "Клавишные":"https://www.youtube.com/results?search_query=%D0%91%D0%BE%D0%B3%20%D0%B6%D0%B8%D0%B2%D0%BE%D0%B9%20%D0%A1%D0%BB%D0%BE%D0%B2%D0%BE%20%D0%96%D0%B8%D0%B7%D0%BD%D0%B8%20PIANO%20tutorial", "Акустика": "https://www.youtube.com/results?search_query=%D0%91%D0%BE%D0%B3%20%D0%B6%D0%B8%D0%B2%D0%BE%D0%B9%20%D0%A1%D0%BB%D0%BE%D0%B2%D0%BE%20%D0%96%D0%B8%D0%B7%D0%BD%D0%B8%20acoustic%20guitar", "Барабаны": "https://www.youtube.com/results?search_query=%D0%91%D0%BE%D0%B3%20%D0%B6%D0%B8%D0%B2%D0%BE%D0%B9%20%D0%A1%D0%BB%D0%BE%D0%B2%D0%BE%20%D0%96%D0%B8%D0%B7%D0%BD%D0%B8%20DRUM%20tutorial", "Бас-гитара":"https://www.youtube.com/results?search_query=%D0%91%D0%BE%D0%B3%20%D0%B6%D0%B8%D0%B2%D0%BE%D0%B9%20%D0%A1%D0%BB%D0%BE%D0%B2%D0%BE%20%D0%96%D0%B8%D0%B7%D0%BD%D0%B8%20bass%20tutorial"}
+                    }
+                ]
+            }, // <-- Правильное разделение объектов
+            {
+                date: "10.05",
+                songs: [
+                    { 
+                        name: "БОГ ЖИВОЙ", author: "СЛОВО ЖИЗНИ", key: "Е", who: "LEV", section: "СЛУЖЕНИЕ",
+                        chords: "https://holychords.pro/46", yt: "https://youtube.com", sp: "https://spotify.com",
+                        tutorials: { "Клавишные":"#", "Акустика": "#", "Барабаны": "#", "Бас-гитара":"#"}
+                    }
+                ]
+            }
+        ];
+                   
+                
+        
+           
+        
+
+        function renderSongs() {
+            const container = document.getElementById('songs-container');
+            const userRole = document.getElementById('userRole').value;
+            container.innerHTML = '';
+
+            sundayData.forEach((sunday, index) => {
+                let html = `
+                    <div class="sunday-group">
+                        <div class="sunday-header" onclick="toggleSunday(this)">
+                            <span class="material-icons">expand_more</span> ${sunday.date}
+                        </div>
+                        <div class="sunday-content" style="display: ${index === 0 ? 'block' : 'none'}">`;
+
+                sunday.songs.forEach(song => {
+                    const tutorialLink = song.tutorials[userRole];
+                    const tutorialIcon = tutorialLink ? `<a href="${tutorialLink}" target="_blank"><span class="material-icons icon-tutorial">school</span></a>` : '';
+
+                    html += `
+                        <div class="section-title">${song.section}</div>
+                        <div class="song-card">
+                            <div class="song-info">
+                                <span class="song-name">${song.name}</span>
+                                <span class="song-meta">${song.author} • ${song.key} • ${song.who}</span>
+                            </div>
+                            <div class="song-actions">
+                                ${tutorialIcon}
+                                <a href="${song.chords}"><span class="material-icons icon-chords">description</span></a>
+                                <a href="${song.yt}"><span class="material-icons icon-yt">play_circle</span></a>
+                                <a href="${song.sp}"><span class="material-icons icon-sp">podcasts</span></a>
+                            </div>
+                        </div>`;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // Вспомогательная функция для открытия/закрытия дат
+        function toggleSunday(header) {
+            const content = header.nextElementSibling;
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            header.classList.toggle('open');
+        }
+
+       function showTab(tabId) {
+    // 1. Скрываем все вкладки
+    const allTabs = document.querySelectorAll('.tab-content');
+    allTabs.forEach(tab => {
+        tab.style.display = 'none';
+    });
+
+    // 2. Показываем нужную вкладку
+    const selectedTab = document.getElementById(tabId + '-section');
+    if (selectedTab) {
+        selectedTab.style.display = 'block';
+    }
+
+    // --- НОВОЕ: Подсветка иконок ---
+    
+    // 3. Убираем класс 'active' у всех ссылок в меню
+    const navLinks = document.querySelectorAll('.nav-list a');
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+
+    // 4. Находим кнопку, на которую нажали, и добавляем ей класс 'active'
+    // Мы ищем ссылку, у которой в onclick написано имя нашей вкладки
+    const activeLink = document.querySelector(`.nav-list a[onclick*="'${tabId}'"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+
+    // 5. Если перешли в музыку, обновляем список
+    if (tabId === 'songs') {
+        renderSongs();
+    }
+
+if (tabId === 'notifications') {
+    renderNotifications();
+}
+
+
+}
+
+ window.onload = () => {
+    // ... твой старый код (аватар и т.д.) ...
+    
+    checkAndCreateNotifications(); // Проверяем ивенты на уведомления
+    showTab('songs'); 
+};
+
+const notificationsData = [
+    {
+        id: 1,
+        type: "urgent", // Срочное
+        title: "🔥 СРОЧНО: Форма служения",
+        text: "Просьба всем заполнить форму, кто в какие даты может служить в следующем месяце!",
+        link: "https://google.com/forms/your-link", // Ссылка на форму
+        time: "Важное",
+        icon: "assignment"
+    },
+    {
+        id: 2,
+        type: "reminder",
+        title: "Напоминание: Репетиция",
+        text: "До репетиции осталось меньше 24 часов! Повтори свою партию.",
+        time: "Осталось: 23ч 15мин",
+        icon: "alarm"
+    },
+    {
+        id: 3,
+        type: "info",
+        title: "Встреча лидеров",
+        text: "В это воскресенье после служения будет короткая встреча в малом зале.",
+        time: "Вчера",
+        icon: "groups"
+    }
+];
+
+function renderNotifications() {
+    const list = document.getElementById('notifications-list');
+    list.innerHTML = '';
+
+    notificationsData.forEach((notif, index) => {
+        const actionButton = notif.link 
+            ? `<a href="${notif.link}" target="_blank" class="notif-btn">ЗАПОЛНИТЬ</a>` 
+            : '';
+
+        list.innerHTML += `
+            <div class="notification-item ${notif.type}" id="notif-${notif.id}">
+                <div class="notif-icon">
+                    <span class="material-icons">${notif.icon}</span>
+                </div>
+                <div class="notif-content">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="notif-title">${notif.title}</span>
+                        <span class="material-icons" style="cursor:pointer; font-size:18px; opacity:0.5;" 
+                              onclick="deleteNotification(${index})">close</span>
+                    </div>
+                    <p class="notif-text">${notif.text}</p>
+                    ${actionButton}
+                    <span class="notif-time">${notif.time}</span>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// Функция удаления
+function deleteNotification(index) {
+    notificationsData.splice(index, 1);
+    renderNotifications();
+}
+
+const monthYearEl = document.getElementById('month-year');
+const daysContainer = document.getElementById('calendar-days');
+const dayNamesContainer = document.querySelector('.calendar__day-names');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+const monthNames = [
+    'Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
+];
+const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+let currentDate = new Date();
+
+// Твоя база данных событий
+const eventsData = {
+    "2026-05-07": [
+        { type: 'rehearsal', title: 'Репетиция', songs: ['Бог Живой', 'Святой'], team: ['Александр', 'Мария'], time: '19:00' }
+    ],
+    "2026-05-10": [
+        { type: 'meeting', title: 'Встреча лидеров', time: '12:00', description: 'Обсуждение плана на июнь' },
+        { type: 'prayer', title: 'Молитвенное', time: '18:00' }
+    ],
+    "2026-05-15": [
+        { type: 'prayer', title: 'Ночная молитва', time: '22:00' }
+    ],
+    "2026-05-05": [
+        { type: 'rehearsal', title: 'репетиция', time: '12:30' }
+    ]
+};
+
+const renderDayNames = () => {
+    dayNamesContainer.innerHTML = dayNames.map(day => `<span>${day}</span>`).join('');
+};
+
+const renderCalendar = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    monthYearEl.textContent = `${monthNames[month]} ${year}`;
+
+    const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+    const daysInMonth = 32 - new Date(year, month, 32).getDate();
+
+    daysContainer.innerHTML = '';
+
+    // Пустые ячейки для начала месяца
+    for(let i = 0; i < firstDay; i++){
+        daysContainer.innerHTML += '<span class="calendar__days-hidden"></span>';
+    }
+
+    // Отрисовка дней
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayEvents = eventsData[dateKey] || [];
+        
+        const isToday = day === new Date().getDate() &&
+                        month === new Date().getMonth() &&
+                        year === new Date().getFullYear();
+
+        const daySpan = document.createElement('span');
+        if (isToday) daySpan.classList.add('today');
+        
+        // Вставляем число
+        daySpan.innerHTML = `<div>${day}</div>`;
+        
+        // Рисуем точки (индикаторы событий)
+        if (dayEvents.length > 0) {
+            const dotsContainer = document.createElement('div');
+            dotsContainer.className = 'event-dots';
+            dayEvents.forEach(ev => {
+                const dot = document.createElement('div');
+                dot.className = `dot dot-${ev.type}`;
+                dotsContainer.appendChild(dot);
+            });
+            daySpan.appendChild(dotsContainer);
+        }
+
+        // Событие двойного клика
+        daySpan.ondblclick = () => openEventModal(dateKey, dayEvents);
+        
+        daysContainer.appendChild(daySpan);
+    }
+};
+
+function openEventModal(date, events) {
+    const modal = document.getElementById('event-modal');
+    const body = document.getElementById('modal-body');
+    
+    if (events.length === 0) return;
+
+    // Преобразуем формат даты из ГГГГ-ММ-ДД в ДД.ММ для поиска в списке песен
+    const formattedDate = date.split('-').reverse().slice(0, 2).join('.');
+
+    body.innerHTML = `<h3 style="margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;">${date}</h3>` + 
+        events.map(ev => `
+            <div class="event-item" style="margin-bottom: 15px;">
+                <b style="color: #3498db">${ev.title}</b> <span style="font-size: 0.8em; opacity: 0.7;">[${ev.time}]</span><br>
+                <div style="margin-top: 5px; font-size: 0.9em;">
+                    ${ev.songs ? `
+                        <div style="margin-top:10px;">
+                            <button onclick="goToSongList('${formattedDate}')" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:12px;">
+                                🎵 ОТКРЫТЬ СПИСОК ПЕСЕН
+                            </button>
+                        </div>
+                    ` : ''}
+                    ${ev.team ? `<div style="margin-top:5px;">👥 Участники: ${ev.team.join(', ')}</div>` : ''}
+                </div>
+            </div>
+        `).join('');
+    
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('event-modal').style.display = 'none';
+}
+
+
+
+const changeMonth = (delta) => {
+    currentDate.setMonth(currentDate.getMonth() + delta);
+    renderCalendar();
+}
+
+prevBtn.addEventListener('click', () => changeMonth(-1));
+nextBtn.addEventListener('click', () => changeMonth(1));
+
+// Инициализация
+renderDayNames();
+renderCalendar();
+
+function goToSongList(date) {
+    // 1. Закрываем модальное окно
+    closeModal();
+    // 2. Переключаемся на вкладку музыки
+    showTab('songs');
+    
+    // 3. Небольшая задержка, чтобы DOM успел обновиться, и ищем нужный заголовок даты
+    setTimeout(() => {
+        const headers = document.querySelectorAll('.sunday-header');
+        headers.forEach(header => {
+            if (header.innerText.includes(date)) {
+                // Если список закрыт — открываем его
+                const content = header.nextElementSibling;
+                if (content.style.display === 'none') {
+                    toggleSunday(header);
+                }
+                // Прокручиваем к нему
+                header.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }, 100);
+}
+
+function checkAndCreateNotifications() {
+    const now = new Date();
+    
+    // Проходим по всем датам в твоей базе данных
+    for (const dateKey in eventsData) {
+        eventsData[dateKey].forEach(ev => {
+            // Создаем объект даты и времени события
+            const eventDateTime = new Date(`${dateKey}T${ev.time || '00:00'}`);
+            const timeDiff = eventDateTime - now; // Разница в миллисекундах
+            
+            const hoursLeft = timeDiff / (1000 * 60 * 60);
+
+            // 1. Уведомление за 24 часа
+            if (hoursLeft > 23.5 && hoursLeft <= 24) {
+                addAutoNotification(`Напоминание (24ч): ${ev.title}`, `До начала осталось ровно сутки!`, "alarm");
+            }
+            
+            // 2. Уведомление за 12 часов (для репетиций)
+            if (ev.type === 'rehearsal' && hoursLeft > 11.5 && hoursLeft <= 12) {
+                addAutoNotification(`Скоро репетиция! (12ч)`, `Ждем тебя через 12 часов. Повтори партии!`, "music_note");
+            }
+
+            // 3. Уведомление за день (для других ивентов)
+            if (ev.type !== 'rehearsal' && hoursLeft > 24 && hoursLeft <= 48) {
+                addAutoNotification(`Завтра: ${ev.title}`, `Не забудь про запланированное событие.`, "event");
+            }
+        });
+    }
+}
+
+// Вспомогательная функция для добавления в список
+function addAutoNotification(title, text, icon) {
+    const exists = notificationsData.some(n => n.title === title);
+    if (!exists) {
+        notificationsData.unshift({
+            id: Date.now(),
+            type: "reminder",
+            title: title,
+            text: text,
+            time: "Сейчас",
+            icon: icon
+        });
+        renderNotifications(); // Обновляем экран уведомлений
+    }
+}
+// Добавь это, если хочешь настоящие пуш-уведомления
+function requestNotificationPermission() {
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+}
+
+// И вызывай это при нажатии на какую-нибудь кнопку (браузеры запрещают запрашивать просто так при загрузке)
+function runNotificationTest() {
+    // 1. Получаем время через 24 часа от "сейчас"
+    const testDate = new Date();
+    testDate.setHours(testDate.getHours() + 24);
+    
+    // Форматируем дату в YYYY-MM-DD
+    const dateKey = testDate.toISOString().split('T')[0];
+    // Форматируем время в HH:MM
+    const timeKey = testDate.toTimeString().split(' ')[0].substring(0, 5);
+
+    // 2. Временно добавляем тестовое событие в базу
+    eventsData[dateKey] = [
+        { 
+            type: 'rehearsal', 
+            title: 'ТЕСТОВАЯ РЕПЕТИЦИЯ', 
+            time: timeKey, 
+            songs: true 
+        }
+    ];
+
+    console.log(`Создано тестовое событие на: ${dateKey} ${timeKey}`);
+
+    // 3. Запускаем проверку
+    checkAndCreateNotifications();
+    // Обнови эту часть в функции checkAndCreateNotifications
+if (hoursLeft > 23 && hoursLeft <= 24.5) { 
+    addAutoNotification(`Напоминание (24ч): ${ev.title}`, `До начала осталось меньше суток!`, "alarm");
+}
+
+if (ev.type === 'rehearsal' && hoursLeft > 11 && hoursLeft <= 12.5) {
+    addAutoNotification(`Скоро репетиция! (12ч)`, `Ждем тебя через 12 часов.`, "music_note");
+}
+    
+    // 4. Переключаем на вкладку уведомлений, чтобы увидеть результат
+    showTab('notifications');
+    
+    alert("Тест запущен! Перейдите в раздел уведомлений.");
+}
+
+// Проверять новые уведомления каждые 30 минут
+setInterval(() => {
+    checkAndCreateNotifications();
+}, 1000 * 60 * 30);
+    </script>
+</body>
+</html>
